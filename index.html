@@ -351,14 +351,20 @@ input,select,textarea{font-family:var(--font-main);font-size:13px}
 @media print{
   #login-screen,#app>.topbar,#app>.nav-tabs,
   .controls-row,.form-actions,.report-toolbar,
-  .accordion,.btn,.nav-tab,.toast{display:none!important}
+  .accordion,.btn,.nav-tab,.toast,#tab-home,#tab-entry,
+  #tab-submissions,.section-header button{display:none!important}
   body{background:white;font-size:12pt}
   #report-content{padding:0}
+  .doc{max-width:100%}
   .doc-footer::after{content:"Page " counter(page)}
   @page{margin:20mm 18mm;size:A4}
   .chart-card,.stat-card{break-inside:avoid}
-  .charts-grid{grid-template-columns:1fr 1fr}
-  .stats-grid{grid-template-columns:repeat(5,1fr)}
+  .charts-grid{grid-template-columns:1fr 1fr!important}
+  .stats-grid{grid-template-columns:repeat(4,1fr)!important}
+  #analytics-entity-table,#analytics-submission-status{break-inside:avoid}
+  .tab-content{display:block!important}
+  #tab-home,#tab-entry,#tab-report-entity,#tab-report-consolidated,
+  #tab-report-esg,#tab-analytics,#tab-submissions{display:none!important}
 }
 </style>
 </head>
@@ -402,12 +408,92 @@ input,select,textarea{font-family:var(--font-main);font-size:13px}
 
   <!-- Nav Tabs -->
   <div class="nav-tabs">
-    <div class="nav-tab active" onclick="showTab('entry')">Data Entry</div>
+    <div class="nav-tab active" onclick="showTab('home')">&#127968; Home</div>
+    <div class="nav-tab" onclick="showTab('entry')">Data Entry</div>
     <div class="nav-tab" onclick="showTab('report-entity')">Entity Report</div>
     <div class="nav-tab" onclick="showTab('report-consolidated')">Group Report</div>
     <div class="nav-tab" onclick="showTab('report-esg')">ESG Report</div>
     <div class="nav-tab admin-only" onclick="showTab('analytics')">Analytics</div>
     <div class="nav-tab" onclick="showTab('submissions')">Submissions</div>
+  </div>
+
+  <!-- ===== HOME TAB ===== -->
+  <div id="tab-home" class="tab-content" style="display:none">
+    <!-- Hero -->
+    <div style="background:linear-gradient(135deg,var(--navy) 0%,#0f1b4a 100%);padding:48px 40px 40px;color:white">
+      <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px">
+        <div>
+          <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.6);margin-bottom:8px">The Simba Group</p>
+          <h1 style="font-size:28px;font-weight:700;font-family:Palatino,Georgia,serif;margin:0 0 8px">HR &amp; ESG Data System</h1>
+          <p style="font-size:14px;color:rgba(255,255,255,0.7);margin:0" id="home-greeting">Welcome back</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">CURRENT PERIOD</p>
+          <p style="font-size:20px;font-weight:700;margin:0" id="home-period">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1200px;margin:0 auto;padding:32px 28px">
+
+      <!-- Quick action cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:36px">
+        <div onclick="showTabByName('entry')" style="cursor:pointer;background:white;border-radius:16px;padding:24px 20px;box-shadow:0 2px 16px rgba(27,42,107,0.07);border-top:4px solid var(--navy);transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(27,42,107,0.14)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 16px rgba(27,42,107,0.07)'">
+          <div style="font-size:28px;margin-bottom:10px">&#9999;&#65039;</div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Data Entry</div>
+          <div style="font-size:12px;color:var(--grey-dark)">Enter monthly HR &amp; ESG data</div>
+        </div>
+        <div onclick="showTabByName('report-entity')" style="cursor:pointer;background:white;border-radius:16px;padding:24px 20px;box-shadow:0 2px 16px rgba(27,42,107,0.07);border-top:4px solid var(--red);transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(232,25,44,0.14)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 16px rgba(27,42,107,0.07)'">
+          <div style="font-size:28px;margin-bottom:10px">&#128196;</div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Entity Report</div>
+          <div style="font-size:12px;color:var(--grey-dark)">Single entity monthly report</div>
+        </div>
+        <div onclick="showTabByName('report-consolidated')" style="cursor:pointer;background:white;border-radius:16px;padding:24px 20px;box-shadow:0 2px 16px rgba(27,42,107,0.07);border-top:4px solid #16a34a;transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(22,163,74,0.14)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 16px rgba(27,42,107,0.07)'">
+          <div style="font-size:28px;margin-bottom:10px">&#128202;</div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Group Report</div>
+          <div style="font-size:12px;color:var(--grey-dark)">Consolidated all-entity report</div>
+        </div>
+        <div onclick="showTabByName('report-esg')" style="cursor:pointer;background:white;border-radius:16px;padding:24px 20px;box-shadow:0 2px 16px rgba(27,42,107,0.07);border-top:4px solid #0891b2;transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(8,145,178,0.14)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 16px rgba(27,42,107,0.07)'">
+          <div style="font-size:28px;margin-bottom:10px">&#127807;</div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">ESG Report</div>
+          <div style="font-size:12px;color:var(--grey-dark)">Environmental data report</div>
+        </div>
+        <div onclick="showTabByName('analytics')" class="admin-only" style="cursor:pointer;background:white;border-radius:16px;padding:24px 20px;box-shadow:0 2px 16px rgba(27,42,107,0.07);border-top:4px solid #7c3aed;transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(124,58,237,0.14)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 16px rgba(27,42,107,0.07)'">
+          <div style="font-size:28px;margin-bottom:10px">&#128200;</div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Analytics</div>
+          <div style="font-size:12px;color:var(--grey-dark)">Trends, charts &amp; KPIs</div>
+        </div>
+        <div onclick="showTabByName('submissions')" style="cursor:pointer;background:white;border-radius:16px;padding:24px 20px;box-shadow:0 2px 16px rgba(27,42,107,0.07);border-top:4px solid #d97706;transition:all .2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(217,119,6,0.14)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 16px rgba(27,42,107,0.07)'">
+          <div style="font-size:28px;margin-bottom:10px">&#128203;</div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">Submissions</div>
+          <div style="font-size:12px;color:var(--grey-dark)">View, edit &amp; manage records</div>
+        </div>
+      </div>
+
+      <!-- Group KPI snapshot -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <h2 style="font-size:16px;font-weight:700;color:var(--navy);font-family:Palatino,Georgia,serif;margin:0">Group Snapshot — Latest Month</h2>
+        <span style="font-size:12px;color:var(--grey-dark)" id="home-snapshot-period">Loading...</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:32px" id="home-kpi-grid">
+        <div style="background:white;border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(27,42,107,0.06);text-align:center">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey-dark);margin-bottom:6px">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Submission status + recent activity side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px" id="home-lower-grid">
+        <div id="home-submission-status" style="background:white;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(27,42,107,0.06)">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:14px">&#128203; Submission Status</p>
+          <p style="font-size:13px;color:var(--grey-dark)">Loading...</p>
+        </div>
+        <div id="home-recent-activity" style="background:white;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(27,42,107,0.06)">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:14px">&#9889; Recent Activity</p>
+          <p style="font-size:13px;color:var(--grey-dark)">Loading...</p>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- ===== DATA ENTRY TAB ===== -->
@@ -908,7 +994,8 @@ function onLogin() {
     el.style.display = isAdmin ? '' : 'none';
   });
 
-  loadEntryData();
+  // Open home page
+  showTabByName('home');
 }
 
 async function doLogout() {
@@ -927,11 +1014,26 @@ function showTab(name) {
   document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).style.display = 'block';
-  // Find the clicked tab
-  event.target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
 
   if (name === 'analytics' && isAdmin) loadAnalytics();
   if (name === 'submissions') loadSubmissions();
+  if (name === 'home') loadHomePage();
+}
+
+function showTabByName(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).style.display = 'block';
+  // Activate the correct nav tab
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + name + "'")) {
+      t.classList.add('active');
+    }
+  });
+  if (name === 'analytics' && isAdmin) loadAnalytics();
+  if (name === 'submissions') loadSubmissions();
+  if (name === 'home') loadHomePage();
 }
 
 function toggleAcc(letter) {
@@ -1181,8 +1283,6 @@ function buildEntityReport(d, entity, period) {
   const curr = d || {};
   const cur = curr.c_currency || 'UGX';
   const monthLabel = fmtPeriod(period);
-
-  // Narratives
   const n = buildNarratives(curr, entity, monthLabel, cur);
 
   return `
@@ -1190,42 +1290,40 @@ function buildEntityReport(d, entity, period) {
   <div class="doc-header">
     <div class="doc-header-left">
       <h1>${entity}</h1>
-      <p>Monthly HR &amp; ESG Report</p>
-      <p><strong>${monthLabel}</strong></p>
+      <p style="font-size:13px;color:var(--grey-dark);margin:3px 0">Monthly HR Report</p>
+      <p style="font-size:13px;font-weight:700;color:var(--navy)">${monthLabel}</p>
     </div>
     <img class="doc-logo" src="${LOGO_B64}" alt="Simba Group">
   </div>
   <div class="doc-body">
 
-    <!-- A: Headcount -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">A</span> Headcount</div>
-      <div class="doc-narrative"><textarea id="nar-a" rows="3">${n.a}</textarea></div>
+      <div class="doc-section-title">A &nbsp; Headcount</div>
+      <div class="doc-narrative"><textarea rows="3">${n.a}</textarea></div>
       <table class="doc-table">
         <thead><tr><th>Metric</th><th>Value</th><th>Notes</th></tr></thead>
         <tbody>
           <tr><td>Opening headcount</td><td>${fv(curr.a_opening)}</td><td>${fv(curr.a_opening_n)}</td></tr>
           <tr><td>Closing headcount</td><td>${fv(curr.a_closing)}</td><td>${fv(curr.a_closing_n)}</td></tr>
-          <tr><td>Permanent staff</td><td>${fv(curr.a_permanent)}</td><td>${fv(curr.a_permanent_n)}</td></tr>
-          <tr><td>Temporary / casual staff</td><td>${fv(curr.a_casual)}</td><td>${fv(curr.a_casual_n)}</td></tr>
-          <tr><td>Male staff</td><td>${fv(curr.a_male)}</td><td>${fv(curr.a_male_n)}</td></tr>
-          <tr><td>Female staff</td><td>${fv(curr.a_female)}</td><td>${fv(curr.a_female_n)}</td></tr>
-          <tr><td><strong>Gender ratio (M% / F%)</strong></td><td><strong>${genderRatio(curr.a_male, curr.a_female)}</strong></td><td></td></tr>
+          <tr><td>Permanent staff</td><td>${fv(curr.a_permanent)}</td><td></td></tr>
+          <tr><td>Temporary / casual staff</td><td>${fv(curr.a_casual)}</td><td></td></tr>
+          <tr><td>Male staff</td><td>${fv(curr.a_male)}</td><td></td></tr>
+          <tr><td>Female staff</td><td>${fv(curr.a_female)}</td><td></td></tr>
+          <tr><td><strong>Gender ratio</strong></td><td><strong>${genderRatio(curr.a_male, curr.a_female)}</strong></td><td></td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- B: Attrition -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">B</span> Attrition and Recruitment</div>
-      <div class="doc-narrative"><textarea id="nar-b" rows="3">${n.b}</textarea></div>
+      <div class="doc-section-title">B &nbsp; Attrition and Recruitment</div>
+      <div class="doc-narrative"><textarea rows="3">${n.b}</textarea></div>
       <table class="doc-table">
-        <thead><tr><th>Metric</th><th>Value</th><th>Notes / Names</th></tr></thead>
+        <thead><tr><th>Metric</th><th>Value</th><th>Notes</th></tr></thead>
         <tbody>
           <tr><td>Total exits</td><td>${fv(curr.b_exits)}</td><td>${fv(curr.b_exits_n)}</td></tr>
           <tr><td>Resignations</td><td>${fv(curr.b_resignations)}</td><td>${fv(curr.b_resignations_n)}</td></tr>
           <tr><td>Dismissals / releases</td><td>${fv(curr.b_dismissals)}</td><td>${fv(curr.b_dismissals_n)}</td></tr>
-          <tr><td>Contract non-confirmations</td><td>${fv(curr.b_nonconfirm)}</td><td>${fv(curr.b_nonconfirm_n)}</td></tr>
+          <tr><td>Contract non-confirmations</td><td>${fv(curr.b_nonconfirm)}</td><td></td></tr>
           <tr><td>Abscondments</td><td>${fv(curr.b_abscond)}</td><td>${fv(curr.b_abscond_n)}</td></tr>
           <tr><td><strong>Attrition rate %</strong></td><td><strong>${attritionRate(curr.b_exits, curr.a_opening, curr.a_closing)}</strong></td><td></td></tr>
           <tr><td>Positions filled</td><td>${fv(curr.b_filled)}</td><td>${fv(curr.b_filled_n)}</td></tr>
@@ -1235,48 +1333,45 @@ function buildEntityReport(d, entity, period) {
       </table>
     </div>
 
-    <!-- C: Payroll -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">C</span> Payroll</div>
-      <div class="doc-narrative"><textarea id="nar-c" rows="2">${n.c}</textarea></div>
+      <div class="doc-section-title">C &nbsp; Payroll</div>
+      <div class="doc-narrative"><textarea rows="2">${n.c}</textarea></div>
       <table class="doc-table">
         <thead><tr><th>Metric</th><th>Value (${cur})</th><th>Notes</th></tr></thead>
         <tbody>
-          <tr><td>Total gross payroll burden</td><td>${fmtNum(curr.c_total)}</td><td>${fv(curr.c_total_n)}</td></tr>
-          <tr><td>On-payroll portion</td><td>${fmtNum(curr.c_onpayroll)}</td><td>${fv(curr.c_on_n)}</td></tr>
-          <tr><td>Off-payroll / contractor portion</td><td>${fmtNum(curr.c_offpayroll)}</td><td>${fv(curr.c_off_n)}</td></tr>
+          <tr><td>Total gross payroll burden</td><td>${fmtNum(curr.c_total)}</td><td>${fv(curr.c_currency_n)}</td></tr>
+          <tr><td>On-payroll portion</td><td>${fmtNum(curr.c_onpayroll)}</td><td></td></tr>
+          <tr><td>Off-payroll / contractor portion</td><td>${fmtNum(curr.c_offpayroll)}</td><td></td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- D: Training -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">D</span> Training and Development</div>
-      <div class="doc-narrative"><textarea id="nar-d" rows="3">${n.d}</textarea></div>
+      <div class="doc-section-title">D &nbsp; Training and Development</div>
+      <div class="doc-narrative"><textarea rows="3">${n.d}</textarea></div>
       <table class="doc-table">
-        <thead><tr><th>Metric</th><th>Value</th><th>Topics / Details</th></tr></thead>
+        <thead><tr><th>Metric</th><th>Value</th><th></th></tr></thead>
         <tbody>
           <tr><td>Training sessions conducted</td><td>${fv(curr.d_sessions)}</td><td></td></tr>
           <tr><td>Total staff trained</td><td>${fv(curr.d_trained)}</td><td></td></tr>
           <tr><td>Total training hours</td><td>${fv(curr.d_hours)}</td><td></td></tr>
-          <tr><td>Avg. training hours per employee</td><td>${avgHours(curr.d_hours, curr.d_trained)}</td><td></td></tr>
-          <tr><td>Key topics covered</td><td colspan="2">${fv(curr.d_topics)}</td></tr>
+          <tr><td>Avg. hours per employee</td><td>${avgHours(curr.d_hours, curr.d_trained)}</td><td></td></tr>
           <tr><td>Staff inducted</td><td>${fv(curr.d_inducted)}</td><td>${fv(curr.d_inducted_n)}</td></tr>
+          <tr><td>Key topics covered</td><td colspan="2" style="font-size:11px;line-height:1.6">${fv(curr.d_topics)}</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- E: Health & Safety -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">E</span> Health, Safety and Wellbeing</div>
-      <div class="doc-narrative"><textarea id="nar-e" rows="3">${n.e}</textarea></div>
+      <div class="doc-section-title">E &nbsp; Health, Safety and Wellbeing</div>
+      <div class="doc-narrative"><textarea rows="3">${n.e}</textarea></div>
       <table class="doc-table">
         <thead><tr><th>Metric</th><th>Value</th><th>Description / Action</th></tr></thead>
         <tbody>
           <tr><td>Total safety incidents</td><td>${fv(curr.e_total)}</td><td>${fv(curr.e_total_n)}</td></tr>
           <tr><td>Minor incidents</td><td>${fv(curr.e_minor)}</td><td>${fv(curr.e_minor_n)}</td></tr>
           <tr><td>Serious incidents (LTI or above)</td><td>${fv(curr.e_serious)}</td><td>${fv(curr.e_serious_n)}</td></tr>
-          <tr><td>Incidents investigated and closed</td><td>${fv(curr.e_closed)}</td><td>${fv(curr.e_closed_n)}</td></tr>
+          <tr><td>Incidents investigated and closed</td><td>${fv(curr.e_closed)}</td><td></td></tr>
           <tr><td>Fire drills conducted</td><td>${fv(curr.e_fire_drill)}</td><td></td></tr>
           <tr><td>Fire extinguisher inspections</td><td>${fv(curr.e_extinguisher)}</td><td></td></tr>
           <tr><td>PPE provided to staff</td><td>${fv(curr.e_ppe)}</td><td></td></tr>
@@ -1285,49 +1380,28 @@ function buildEntityReport(d, entity, period) {
       </table>
     </div>
 
-    <!-- F: Disciplinary -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">F</span> Disciplinary and Industrial Relations</div>
-      <div class="doc-narrative"><textarea id="nar-f" rows="2">${n.f}</textarea></div>
+      <div class="doc-section-title">F &nbsp; Disciplinary and Industrial Relations</div>
+      <div class="doc-narrative"><textarea rows="2">${n.f}</textarea></div>
       <table class="doc-table">
         <thead><tr><th>Metric</th><th>Value</th><th>Notes</th></tr></thead>
         <tbody>
           <tr><td>Warning letters issued</td><td>${fv(curr.f_warnings)}</td><td>${fv(curr.f_warnings_n)}</td></tr>
-          <tr><td>Disciplinary hearings held</td><td>${fv(curr.f_hearings)}</td><td>${fv(curr.f_hearings_n)}</td></tr>
+          <tr><td>Disciplinary hearings held</td><td>${fv(curr.f_hearings)}</td><td></td></tr>
           <tr><td>Dismissals / releases</td><td>${fv(curr.f_dismissals)}</td><td>${fv(curr.f_dismissals_n)}</td></tr>
-          <tr><td>Cases pending / ongoing</td><td>${fv(curr.f_pending)}</td><td>${fv(curr.f_pending_n)}</td></tr>
+          <tr><td>Cases pending / ongoing</td><td>${fv(curr.f_pending)}</td><td></td></tr>
           <tr><td>Grievances raised</td><td>${fv(curr.f_grievances)}</td><td>${fv(curr.f_grievances_n)}</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- G: Environmental -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">G</span> Environmental Data (ESG)</div>
-      <div class="doc-narrative"><textarea id="nar-g" rows="3">${n.g}</textarea></div>
+      <div class="doc-section-title">G &nbsp; Employee Engagement and CSR</div>
+      <div class="doc-narrative"><textarea rows="2">${n.h}</textarea></div>
       <table class="doc-table">
-        <thead><tr><th>Resource / Metric</th><th>Value</th><th>Unit</th></tr></thead>
+        <thead><tr><th>Activity</th><th>Description and Reach</th></tr></thead>
         <tbody>
-          <tr><td>Electricity consumed</td><td>${fv(curr.g_electricity)}</td><td>kWh</td></tr>
-          <tr><td>Water consumed</td><td>${fv(curr.g_water)}</td><td>m³</td></tr>
-          <tr><td>Diesel consumed</td><td>${fv(curr.g_diesel)}</td><td>Litres</td></tr>
-          <tr><td>Waste generated</td><td>${fv(curr.g_waste)}</td><td>Tons</td></tr>
-          <tr><td>Plastic shredded</td><td>${fv(curr.g_plastic)}</td><td>kg</td></tr>
-          <tr><td>Recycling / waste diversion</td><td colspan="2">${fv(curr.g_recycling)}</td></tr>
-          <tr><td>Fire evacuation drill</td><td>${fv(curr.g_fire_drill)}</td><td></td></tr>
-          <tr><td>Environmental awareness session</td><td>${fv(curr.g_env_session)}</td><td>${fv(curr.g_env_topic)}</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- H: Engagement -->
-    <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">H</span> Employee Engagement and CSR</div>
-      <div class="doc-narrative"><textarea id="nar-h" rows="2">${n.h}</textarea></div>
-      <table class="doc-table">
-        <thead><tr><th>Activity / Initiative</th><th>Description and Reach</th></tr></thead>
-        <tbody>
-          <tr><td>Employee engagement activities</td><td>${fv(curr.h_engagement)}</td></tr>
+          <tr><td>Engagement activities</td><td>${fv(curr.h_engagement)}</td></tr>
           <tr><td>Recognition / awards</td><td>${fv(curr.h_recognition)}</td></tr>
           <tr><td>CSR / community activities</td><td>${fv(curr.h_csr)}</td></tr>
           <tr><td>Staff welfare initiatives</td><td>${fv(curr.h_welfare)}</td></tr>
@@ -1336,10 +1410,9 @@ function buildEntityReport(d, entity, period) {
       </table>
     </div>
 
-    <!-- I: Initiatives -->
     <div class="doc-section">
-      <div class="doc-section-title"><span class="doc-section-letter">I</span> HR Initiatives and Other Matters</div>
-      <div class="doc-narrative"><textarea id="nar-i" rows="2">${n.i}</textarea></div>
+      <div class="doc-section-title">H &nbsp; HR Initiatives and Other Matters</div>
+      <div class="doc-narrative"><textarea rows="2">${n.i}</textarea></div>
       <table class="doc-table">
         <thead><tr><th>Item</th><th>Detail</th></tr></thead>
         <tbody>
@@ -1348,7 +1421,7 @@ function buildEntityReport(d, entity, period) {
           <tr><td>Audit activity</td><td>${fv(curr.i_audit)}</td></tr>
           <tr><td>Structural / leadership changes</td><td>${fv(curr.i_structure)}</td></tr>
           <tr><td>Issues / risks to escalate</td><td>${fv(curr.i_risks)}</td></tr>
-          <tr><td>Any other matters</td><td>${fv(curr.i_other)}</td></tr>
+          ${curr.i_other ? `<tr><td>Any other matters</td><td>${fv(curr.i_other)}</td></tr>` : ''}
         </tbody>
       </table>
     </div>
@@ -1356,8 +1429,8 @@ function buildEntityReport(d, entity, period) {
   </div>
   <div class="doc-footer">
     <span>The Simba Group &mdash; Confidential</span>
-    <span>${entity} HR &amp; ESG Report &mdash; ${monthLabel}</span>
-    <span>Page 1</span>
+    <span>${entity} &mdash; Monthly HR Report &mdash; ${monthLabel}</span>
+    <span></span>
   </div>
 </div>`;
 }
@@ -1386,21 +1459,46 @@ function buildConsolidatedReport(rows, period) {
   const byEntity = {};
   rows.forEach(r => { byEntity[r.entity] = r; });
 
-  // Totals
   const tot = (field) => ENTITIES.reduce((s, e) => s + (parseFloat(byEntity[e]?.[field]) || 0), 0);
   const totalClosing = tot('a_closing');
+  const totalOpening = tot('a_opening');
   const totalExits = tot('b_exits');
   const totalTrained = tot('d_trained');
   const totalHours = tot('d_hours');
+  const totalSessions = tot('d_sessions');
   const totalIncidents = tot('e_total');
+  const totalSerious = tot('e_serious');
+  const totalFilled = tot('b_filled');
+  const totalPending = tot('b_pending');
+  const totalPromotions = tot('b_promotions');
+  const totalWarnings = tot('f_warnings');
+  const totalGrievances = tot('f_grievances');
+  const totalInducted = tot('d_inducted');
+  const groupAttrition = (totalOpening + totalClosing) > 0
+    ? (totalExits / ((totalOpening + totalClosing) / 2) * 100).toFixed(2) + '%'
+    : '—';
 
-  // Summary narrative
-  const summaryNarrative = `The Simba Group closed ${monthLabel} with a combined headcount of ${totalClosing.toLocaleString()} employees across all six business entities. The Group recorded ${totalExits} exit${totalExits !== 1 ? 's' : ''} during the month, while ${totalTrained} employees participated in ${tot('d_sessions')} training sessions delivering ${totalHours} hours of learning. Safety performance recorded ${totalIncidents} incident${totalIncidents !== 1 ? 's' : ''} across all entities. Full entity-by-entity detail follows below.`;
+  // Collect training topics sampled across entities
+  const allTopics = ENTITIES
+    .filter(e => byEntity[e]?.d_topics)
+    .map(e => byEntity[e].d_topics.split(';')[0].split(',')[0].trim())
+    .filter(Boolean).slice(0, 6).join('; ');
 
-  // Build summary table
-  let summaryRows = ENTITIES.map(e => {
+  // Collect highlights from engagement / initiatives
+  const highlights = ENTITIES
+    .filter(e => byEntity[e]?.h_recognition || byEntity[e]?.h_engagement)
+    .map(e => byEntity[e].h_recognition || byEntity[e].h_engagement)
+    .filter(Boolean).slice(0, 3).join(' | ');
+
+  const risks = ENTITIES
+    .filter(e => byEntity[e]?.i_risks)
+    .map(e => `<strong>${e}:</strong> ${byEntity[e].i_risks}`)
+    .join('<br>');
+
+  // Summary table
+  const summaryRows = ENTITIES.map(e => {
     const r = byEntity[e];
-    if (!r) return `<tr><td>${e}</td><td colspan="7" style="color:#999;font-style:italic">Not submitted</td></tr>`;
+    if (!r) return `<tr><td>${e}</td><td colspan="7" style="color:#999;font-style:italic;font-size:11px">Not submitted</td></tr>`;
     return `<tr>
       <td><strong>${e}</strong></td>
       <td>${fv(r.a_closing)}</td>
@@ -1413,55 +1511,113 @@ function buildConsolidatedReport(rows, period) {
     </tr>`;
   }).join('');
 
-  let entitySections = rows.map(r => buildEntityReport(r, r.entity, period)).join('<div style="page-break-before:always;margin:32px 0;border-top:3px solid var(--grey-mid)"></div>');
+  // Payroll table
+  const payrollRows = ENTITIES.map(e => {
+    const r = byEntity[e];
+    if (!r || !r.c_total) return '';
+    return `<tr><td><strong>${e}</strong></td><td>${r.c_currency || 'UGX'}</td><td>${fmtNum(r.c_total)}</td><td>${fmtNum(r.c_onpayroll)}</td><td>${fmtNum(r.c_offpayroll)}</td></tr>`;
+  }).join('');
+
+  // Disciplinary table
+  const discRows = ENTITIES.map(e => {
+    const r = byEntity[e];
+    if (!r) return '';
+    return `<tr><td><strong>${e}</strong></td><td>${fv(r.f_warnings)}</td><td>${fv(r.f_hearings)}</td><td>${fv(r.f_dismissals)}</td><td>${fv(r.f_pending)}</td><td>${fv(r.f_grievances)}</td></tr>`;
+  }).join('');
+
+  const execNarrative = `The Simba Group closed ${monthLabel} with a combined headcount of ${totalClosing.toLocaleString()} employees across all six business entities, compared to ${totalOpening.toLocaleString()} at the start of the month. A total of ${totalExits} employee${totalExits!==1?'s':''} exited the Group during the period, translating to a Group attrition rate of ${groupAttrition}. ${totalFilled} position${totalFilled!==1?'s were':' was'} filled against ${totalPending} still pending. The Group delivered ${totalSessions} training sessions covering ${totalTrained} employees for a combined ${totalHours} hours of learning. ${totalIncidents} safety incident${totalIncidents!==1?'s were':' was'} recorded, ${totalSerious > 0 ? totalSerious + ' of which reached LTI level' : 'none of which were serious'}. ${totalWarnings} warning letter${totalWarnings!==1?'s were':' was'} issued across the Group, with ${totalGrievances} grievance${totalGrievances!==1?'s':''} raised.`;
 
   return `
 <div class="doc">
   <div class="doc-header">
     <div class="doc-header-left">
       <h1>The Simba Group</h1>
-      <p>Group Consolidated HR &amp; ESG Report</p>
-      <p><strong>${monthLabel}</strong></p>
+      <p style="font-size:13px;color:var(--grey-dark);margin:3px 0">Group Consolidated HR Report</p>
+      <p style="font-size:13px;font-weight:700;color:var(--navy)">${monthLabel}</p>
     </div>
     <img class="doc-logo" src="${LOGO_B64}" alt="Simba Group">
   </div>
   <div class="doc-body">
+
     <div class="exec-summary">
       <h3>Executive Summary</h3>
-      <p>${summaryNarrative}</p>
+      <p>${execNarrative}</p>
     </div>
 
+    <!-- SUMMARY TABLE -->
     <div class="doc-section">
-      <div class="doc-section-title">Group Summary — Key Metrics</div>
+      <div class="doc-section-title">Group Headcount, Attrition and Training Summary</div>
       <table class="doc-table">
         <thead>
-          <tr>
-            <th>Entity</th><th>Closing HC</th><th>Gender (M/F)</th>
-            <th>Exits</th><th>Attrition %</th>
-            <th>Staff Trained</th><th>Training Hrs</th><th>Incidents</th>
-          </tr>
+          <tr><th>Entity</th><th>Closing HC</th><th>Gender M/F</th><th>Exits</th><th>Attrition %</th><th>Trained</th><th>Hrs</th><th>Incidents</th></tr>
         </thead>
         <tbody>
           ${summaryRows}
           <tr style="font-weight:700;background:#f2f2f2">
             <td>GROUP TOTAL</td>
-            <td>${totalClosing}</td><td></td>
-            <td>${totalExits}</td><td></td>
-            <td>${totalTrained}</td><td>${totalHours}</td>
-            <td>${totalIncidents}</td>
+            <td>${totalClosing.toLocaleString()}</td><td>—</td>
+            <td>${totalExits}</td><td>${groupAttrition}</td>
+            <td>${totalTrained}</td><td>${totalHours}</td><td>${totalIncidents}</td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- PAYROLL -->
+    <div class="doc-section">
+      <div class="doc-section-title">Payroll Summary</div>
+      <table class="doc-table">
+        <thead><tr><th>Entity</th><th>Currency</th><th>Gross Payroll</th><th>On-Payroll</th><th>Off-Payroll</th></tr></thead>
+        <tbody>${payrollRows}</tbody>
+      </table>
+    </div>
+
+    <!-- TRAINING HIGHLIGHTS -->
+    <div class="doc-section">
+      <div class="doc-section-title">Training and Development Highlights</div>
+      <p style="font-size:13px;line-height:1.7;color:#333;margin-bottom:10px">Across the Group, <strong>${totalSessions} training sessions</strong> were delivered in ${monthLabel}, covering <strong>${totalTrained} employees</strong> for a total of <strong>${totalHours} hours</strong>. ${totalInducted > 0 ? totalInducted + ' new employees were inducted during the period.' : ''} Topics sampled from across entities included: <em>${allTopics || 'various departmental topics'}</em>. Full training detail is available in each entity report.</p>
+    </div>
+
+    <!-- HEALTH AND SAFETY -->
+    <div class="doc-section">
+      <div class="doc-section-title">Health, Safety and Wellbeing</div>
+      <p style="font-size:13px;line-height:1.7;color:#333;margin-bottom:10px">${totalIncidents === 0
+        ? `The Group recorded no safety incidents in ${monthLabel}. All entities maintained satisfactory health and safety performance during the period.`
+        : `The Group recorded <strong>${totalIncidents} safety incident${totalIncidents!==1?'s':''}</strong> in ${monthLabel}, ${totalSerious > 0 ? 'including <strong>' + totalSerious + ' serious incident' + (totalSerious!==1?'s':'' ) + ' (LTI level)</strong>' : 'all minor in nature'}. ${ENTITIES.filter(e=>byEntity[e]?.e_total>0).map(e=>`${e}: ${byEntity[e].e_total_n||byEntity[e].e_minor_n||'incident logged'}`).join('. ')}.`
+      }</p>
+    </div>
+
+    <!-- DISCIPLINARY -->
+    <div class="doc-section">
+      <div class="doc-section-title">Disciplinary and Industrial Relations</div>
+      <table class="doc-table">
+        <thead><tr><th>Entity</th><th>Warnings</th><th>Hearings</th><th>Dismissals</th><th>Pending</th><th>Grievances</th></tr></thead>
+        <tbody>
+          ${discRows}
+          <tr style="font-weight:700;background:#f2f2f2"><td>GROUP TOTAL</td><td>${totalWarnings}</td><td>${tot('f_hearings')}</td><td>${tot('f_dismissals')}</td><td>${tot('f_pending')}</td><td>${totalGrievances}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ENGAGEMENT HIGHLIGHTS -->
+    ${highlights ? `<div class="doc-section">
+      <div class="doc-section-title">Employee Engagement and CSR Highlights</div>
+      <p style="font-size:13px;line-height:1.7;color:#333">${highlights}. Full engagement detail is available in individual entity reports.</p>
+    </div>` : ''}
+
+    <!-- RISKS AND ESCALATIONS -->
+    ${risks ? `<div class="doc-section">
+      <div class="doc-section-title">Issues and Risks for Group Attention</div>
+      <p style="font-size:13px;line-height:1.8;color:#333">${risks}</p>
+    </div>` : ''}
+
   </div>
   <div class="doc-footer">
     <span>The Simba Group &mdash; Confidential</span>
-    <span>Group Consolidated Report &mdash; ${monthLabel}</span>
-    <span>Page 1</span>
+    <span>Group Consolidated HR Report &mdash; ${monthLabel}</span>
+    <span></span>
   </div>
-</div>
-<div style="page-break-before:always;"></div>
-${entitySections}`;
+</div>`;
 }
 
 // ===== ESG REPORT =====
@@ -1779,6 +1935,108 @@ function buildNarratives(d, entity, monthLabel, currency) {
       ? `Key HR activities for ${entity} in ${monthLabel} included: ${d.i_initiatives || 'routine HR operations'}. ${d.i_risks ? 'The following matters require Group HR attention: ' + d.i_risks : ''}`
       : `No major HR initiatives or escalations were recorded for ${entity} in ${monthLabel}.`}`
   };
+}
+
+// ===== HOME PAGE =====
+async function loadHomePage() {
+  // Greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = currentUser.email === ADMIN_EMAIL ? 'Kabugo' : 'Josephine';
+  document.getElementById('home-greeting').textContent = greeting + ', ' + firstName;
+
+  // Current period
+  const now = new Date();
+  const period = now.toISOString().slice(0,7);
+  document.getElementById('home-period').textContent = fmtPeriod(period);
+
+  // Load latest data
+  const { data } = await db
+    .from('hr_data')
+    .select('entity,period,status,a_closing,a_opening,a_male,a_female,b_exits,d_trained,d_hours,d_sessions,e_total,e_serious,f_warnings,b_filled,updated_at,submitted_at')
+    .order('period', { ascending: false })
+    .limit(100);
+
+  if (!data || data.length === 0) {
+    document.getElementById('home-kpi-grid').innerHTML = '<p style="color:var(--grey-dark);font-size:13px;grid-column:1/-1">No data yet. Start by entering data for the current month.</p>';
+    return;
+  }
+
+  const periods = [...new Set(data.map(r => r.period))].sort();
+  const latestPeriod = periods[periods.length - 1];
+  const latestRows = data.filter(r => r.period === latestPeriod);
+
+  document.getElementById('home-snapshot-period').textContent = fmtPeriod(latestPeriod);
+
+  const sum = (rows, f) => rows.reduce((s,r) => s + (parseFloat(r[f])||0), 0);
+  const totalHC = sum(latestRows,'a_closing');
+  const totalExits = sum(latestRows,'b_exits');
+  const totalMale = sum(latestRows,'a_male');
+  const totalFemale = sum(latestRows,'a_female');
+  const totalTrained = sum(latestRows,'d_trained');
+  const totalHours = sum(latestRows,'d_hours');
+  const totalIncidents = sum(latestRows,'e_total');
+  const totalSerious = sum(latestRows,'e_serious');
+  const totalFilled = sum(latestRows,'b_filled');
+  const avgOpen = sum(latestRows,'a_opening');
+  const attrRate = (avgOpen + totalHC) > 0 ? (totalExits / ((avgOpen+totalHC)/2) * 100).toFixed(1) : '0.0';
+  const mPct = totalMale+totalFemale > 0 ? Math.round(totalMale/(totalMale+totalFemale)*100) : 0;
+  const submittedCount = latestRows.filter(r => r.status === 'submitted').length;
+
+  const kpiData = [
+    { label:'Group Headcount', value: totalHC.toLocaleString(), sub:'Closing ' + fmtPeriod(latestPeriod), color:'var(--navy)', icon:'&#128101;' },
+    { label:'Total Exits', value: totalExits, sub:'Attrition ' + attrRate + '%', color:'var(--red)', icon:'&#128682;' },
+    { label:'Staff Trained', value: totalTrained, sub: totalHours + ' hours delivered', color:'#16a34a', icon:'&#127891;' },
+    { label:'Safety Incidents', value: totalIncidents, sub: totalSerious + ' serious/LTI', color: totalSerious > 0 ? 'var(--red)' : '#16a34a', icon:'&#9888;&#65039;' },
+    { label:'Gender (Male)', value: mPct + '%', sub: (100-mPct) + '% female', color:'#7c3aed', icon:'&#9898;' },
+    { label:'Positions Filled', value: totalFilled, sub:'This month', color:'#0891b2', icon:'&#128203;' },
+    { label:'Entities Reported', value: submittedCount + ' / 6', sub: (6-submittedCount) + ' pending', color: submittedCount === 6 ? '#16a34a' : '#d97706', icon:'&#127970;' },
+    { label:'Warnings Issued', value: sum(latestRows,'f_warnings'), sub:'Across all entities', color:'#d97706', icon:'&#9888;' },
+  ];
+
+  document.getElementById('home-kpi-grid').innerHTML = kpiData.map(k => `
+    <div style="background:white;border-radius:14px;padding:18px 16px;box-shadow:0 2px 12px rgba(27,42,107,0.06);border-left:4px solid ${k.color}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:18px">${k.icon}</span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey-dark);font-weight:700">${k.label}</span>
+      </div>
+      <div style="font-size:26px;font-weight:700;color:${k.color};line-height:1">${k.value}</div>
+      <div style="font-size:11px;color:var(--grey-dark);margin-top:5px">${k.sub}</div>
+    </div>`).join('');
+
+  // Submission status
+  const submittedEntities = latestRows.map(r => r.entity);
+  document.getElementById('home-submission-status').innerHTML = `
+    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:14px">&#128203; Submission Status — ${fmtPeriod(latestPeriod)}</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${ENTITIES.map(e => {
+        const r = latestRows.find(d => d.entity === e);
+        const submitted = r && r.status === 'submitted';
+        const draft = r && r.status === 'draft';
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;background:${submitted?'#f0fdf4':draft?'#fffbeb':'#fef2f2'}">
+          <span style="font-size:12px;font-weight:600;color:var(--navy)">${e}</span>
+          <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;background:${submitted?'#d1fae5':draft?'#fef3c7':'#fee2e2'};color:${submitted?'#065f46':draft?'#92400e':'#991b1b'}">${submitted?'&#10003; Submitted':draft?'&#128190; Draft':'&#9675; Not started'}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Recent activity (last 8 records updated)
+  const recent = [...data].sort((a,b) => new Date(b.updated_at||0) - new Date(a.updated_at||0)).slice(0,8);
+  document.getElementById('home-recent-activity').innerHTML = `
+    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);margin-bottom:14px">&#9889; Recent Activity</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${recent.map(r => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--grey-mid)">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--navy)">${r.entity}</div>
+            <div style="font-size:11px;color:var(--grey-dark)">${fmtPeriod(r.period)}</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;background:${r.status==='submitted'?'#d1fae5':'#fef3c7'};color:${r.status==='submitted'?'#065f46':'#92400e'}">${r.status}</span>
+            <div style="font-size:10px;color:var(--grey-dark);margin-top:3px">${r.updated_at ? new Date(r.updated_at).toLocaleDateString('en-GB') : '—'}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
 }
 
 // ===== HELPERS =====
