@@ -399,7 +399,7 @@ input,select,textarea{font-family:var(--font-main);font-size:13px}
     <div class="nav-tab" onclick="showTab('report-consolidated')">Group Report</div>
     <div class="nav-tab" onclick="showTab('report-esg')">ESG Report</div>
     <div class="nav-tab admin-only" onclick="showTab('analytics')">Analytics</div>
-    <div class="nav-tab admin-only" onclick="showTab('submissions')">Submissions</div>
+    <div class="nav-tab" onclick="showTab('submissions')">Submissions</div>
   </div>
 
   <!-- ===== DATA ENTRY TAB ===== -->
@@ -910,7 +910,7 @@ function showTab(name) {
   event.target.classList.add('active');
 
   if (name === 'analytics' && isAdmin) loadAnalytics();
-  if (name === 'submissions' && isAdmin) loadSubmissions();
+  if (name === 'submissions') loadSubmissions();
 }
 
 function toggleAcc(letter) {
@@ -1640,31 +1640,73 @@ function buildCharts(data, periods) {
 async function loadSubmissions() {
   const period = document.getElementById('sub-filter-month').value;
   const wrap = document.getElementById('submissions-table-wrap');
+  wrap.innerHTML = '<div class="empty-state"><div class="icon"><span class="spinner" style="border-top-color:var(--navy);border-color:var(--grey-mid)"></span></div><h3>Loading...</h3></div>';
 
   let query = db.from('hr_data').select('entity,period,status,submitted_at,updated_at').order('period', { ascending: false }).order('entity');
   if (period) query = query.eq('period', period);
   const { data, error } = await query;
 
   if (!data || data.length === 0) {
-    wrap.innerHTML = '<div class="empty-state"><div class="icon">&#128203;</div><h3>No submissions found</h3></div>';
+    wrap.innerHTML = '<div class="empty-state"><div class="icon">&#128203;</div><h3>No submissions found</h3><p>No data has been saved yet for this period.</p></div>';
     return;
   }
 
   const rows = data.map(r => `
     <tr>
-      <td>${r.entity}</td>
+      <td><strong>${r.entity}</strong></td>
       <td>${fmtPeriod(r.period)}</td>
       <td><span class="status-badge ${r.status === 'submitted' ? 'status-submitted' : 'status-draft'}">${r.status}</span></td>
       <td>${r.submitted_at ? new Date(r.submitted_at).toLocaleDateString('en-GB') : '—'}</td>
       <td>${r.updated_at ? new Date(r.updated_at).toLocaleDateString('en-GB') : '—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-outline btn-sm" onclick="openRecord('${r.entity}','${r.period}')">&#9998; Edit</button>
+        <button class="btn btn-save btn-sm" style="margin-left:4px" onclick="openReport('${r.entity}','${r.period}')">&#128196; Report</button>
+        ${isAdmin ? `<button class="btn btn-sm" style="margin-left:4px;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5" onclick="deleteRecord('${r.entity}','${r.period}')">&#128465; Delete</button>` : ''}
+      </td>
     </tr>
   `).join('');
 
   wrap.innerHTML = `
     <table class="data-table">
-      <thead><tr><th>Entity</th><th>Period</th><th>Status</th><th>Submitted</th><th>Last Updated</th></tr></thead>
+      <thead><tr><th>Entity</th><th>Period</th><th>Status</th><th>Submitted</th><th>Last Updated</th><th>Actions</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+}
+
+function openRecord(entity, period) {
+  // Switch to data entry tab, set entity and period, load the record
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-entry').style.display = 'block';
+  document.querySelector('.nav-tab').classList.add('active');
+  document.getElementById('entry-entity').value = entity;
+  document.getElementById('entry-month').value = period;
+  loadEntryData();
+  window.scrollTo(0,0);
+  showToast('Record loaded — make your changes and save.', 'success');
+}
+
+function openReport(entity, period) {
+  // Switch to entity report tab and generate
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-report-entity').style.display = 'block';
+  document.getElementById('rep-entity').value = entity;
+  document.getElementById('rep-month').value = period;
+  generateEntityReport();
+  window.scrollTo(0,0);
+}
+
+async function deleteRecord(entity, period) {
+  if (!isAdmin) return;
+  if (!confirm('Delete the record for ' + entity + ' — ' + fmtPeriod(period) + '?\n\nThis cannot be undone.')) return;
+  const { error } = await db.from('hr_data').delete().eq('entity', entity).eq('period', period);
+  if (error) {
+    showToast('Error deleting record: ' + error.message, 'error');
+    return;
+  }
+  showToast('Record deleted.', 'success');
+  loadSubmissions();
 }
 
 // ===== NARRATIVE BUILDER =====
